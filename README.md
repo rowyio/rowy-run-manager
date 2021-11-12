@@ -1,11 +1,4 @@
-# Connect Service Example
-
-
-This is a typescript/express cloud run base repo that can help you get started with connect service feature of Rowy.
-
+#
 ### Deployment
 
-```
-./deploy.sh --project [YOUR_PROJECT_ID]
-```
-
+[![Deploy to Google Cloud Run](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https://github.com/rowyio/rowy-run-manager.git)

@@ -1,6 +1,6 @@
 {
-  "name": "connect-service",
-  "description": "example of connect-service server with cloud run",
+  "name": "rowy-run-manager",
+  "description": "Helps in keeping your Rowy backend update to date",
   "version": "1.0.0",
   "main": "build/index.js",
   "scripts": {
