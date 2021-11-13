@@ -44,3 +44,4 @@ const regionConverter = (region:string, serviceRegions:string[]) => {
         return false
       }
   }
+  setupFirestore()
