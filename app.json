@@ -15,12 +15,12 @@
       "commands": [
         "npm install",
         "npm run build",
-        "node build/initTerraformStateBucket"
+        "node build/hooks/initTerraformStateBucket"
       ]
     },
     "postbuild":{
       "commands": [
-        "node build/initFirestore"
+        "node build/hooks/initFirestore"
       ]
     }
   }
