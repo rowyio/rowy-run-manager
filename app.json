@@ -13,6 +13,8 @@
   "hooks": {
     "prebuild": {
       "commands": [
+        "npm install",
+        "npm run build",
         "node build/initTerraformStateBucket"
       ]
     },

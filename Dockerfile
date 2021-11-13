@@ -42,8 +42,6 @@ COPY . ./
 #apt-get install -y gnupg software-properties-common curl terraform
 
 #RUN apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-
-
 RUN yarn
 RUN npx tsc
 RUN yarn build
