@@ -32,7 +32,7 @@ const regionConverter = (region:string, serviceRegions:string[]) => {
   export const setupFirestore = async() => {
       const needsSetup = !(await firestoreExists())
       if(needsSetup){
-      await asyncExecute(`terraform -chdir=terraform/firestore 
+      await asyncExecute(`terraform -chdir=terraform/firestore  init
       ${tf_vars}
       -backend-config "bucket=${tf_state_bucket}" \
      -backend-config "prefix=${tf_application}/${tf_environment}"
