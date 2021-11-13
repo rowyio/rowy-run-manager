@@ -24,20 +24,13 @@ const regionConverter = (region:string, serviceRegions:string[]) => {
   const tf_environment = "prod"
   const firestoreRegion = regionConverter(process.env.GOOGLE_CLOUD_REGION!, firestoreRegions);
 
-  const tf_vars = `-var="project_id=${process.env.GOOGLE_CLOUD_PROJECT}" 
-  -var="region=${firestoreRegion}"
-  -var="tf_state_bucket=${tf_state_bucket}"
-    -var="application=${tf_application}"
-    -var="environment=${tf_environment}"` 
+  const tf_vars = `-var="project_id=${process.env.GOOGLE_CLOUD_PROJECT}" -var="region=${firestoreRegion}" -var="tf_state_bucket=${tf_state_bucket}" -var="application=${tf_application}" -var="environment=${tf_environment}"` 
   export const setupFirestore = async() => {
       const needsSetup = !(await firestoreExists())
       if(needsSetup){
-      await asyncExecute(`terraform -chdir=terraform/firestore  init
-      ${tf_vars}
-      -backend-config "bucket=${tf_state_bucket}" \
-     -backend-config "prefix=${tf_application}/${tf_environment}"
+      await asyncExecute(`terraform -chdir=terraform/firestore init ${tf_vars} -backend-config "bucket=${tf_state_bucket}" -backend-config "prefix=${tf_application}/${tf_environment}"
       `, () => {});
-      return asyncExecute(`terraform -chdir=terraform/firestore apply ${tf_vars} --auto-approve`,()=>{})
+      return asyncExecute(`terraform -chdir=terraform/firestore apply --auto-approve ${tf_vars}`,()=>{})
        
       } else {
         console.log("Firestore already exists");
