@@ -28,9 +28,6 @@ RUN mv terraform /usr/local/bin/
 # Check that it's installed
 RUN terraform --version 
 
-
-
-#RUN export PATH="$PATH:$PWD/tf/bin"
 # Copy application dependency manifests to the container image.
 # A wildcard is used to ensure copying both package.json AND package-lock.json (when available).
 # Copying this first prevents re-running npm install on every code change.
