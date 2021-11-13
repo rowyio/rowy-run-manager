@@ -1,8 +1,36 @@
-# FROM hashicorp/terraform:latest as tf
+
 FROM node:14-slim
 # Create and change to the app directory.
 WORKDIR /workdir
-# COPY --from=tf . ./
+
+RUN \
+# Update
+apt-get update -y && \
+# Install Unzip
+apt-get install unzip -y && \
+# need wget
+apt-get install wget -y && \
+# vim
+apt-get install vim -y
+
+################################
+# Install Terraform
+################################
+
+# Download terraform for linux
+RUN wget https://releases.hashicorp.com/terraform/1.1.0-beta1/terraform_1.1.0-beta1_linux_amd64.zip
+
+# Unzip
+RUN unzip terraform_1.1.0-beta1_linux_amd64.zip
+
+# Move to local bin
+RUN mv terraform /usr/local/bin/
+# Check that it's installed
+RUN terraform --version 
+
+
+
+#RUN export PATH="$PATH:$PWD/tf/bin"
 # Copy application dependency manifests to the container image.
 # A wildcard is used to ensure copying both package.json AND package-lock.json (when available).
 # Copying this first prevents re-running npm install on every code change.
@@ -11,7 +39,6 @@ COPY . ./
 # Install production dependencies.
 # If you add a package-lock.json, speed your build by switching to 'npm ci'.
 # RUN npm ci --only=production
-RUN apt-get update 
 #apt-get install -y gnupg software-properties-common curl terraform
 
 #RUN apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
