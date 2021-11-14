@@ -11,7 +11,9 @@ apt-get install unzip -y && \
 # need wget
 apt-get install wget -y && \
 # vim
-apt-get install vim -y
+apt-get install vim -y && \
+# Install Git
+apt-get install git -y
 
 ################################
 # Install Terraform
