@@ -13,7 +13,8 @@ apt-get install wget -y && \
 # vim
 apt-get install vim -y && \
 # Install Git
-apt-get install git -y
+apt-get install git -y && \
+apt-get install curl -y
 
 ################################
 # Install Terraform

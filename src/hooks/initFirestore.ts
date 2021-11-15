@@ -1,8 +1,52 @@
 import {Firestore} from '@google-cloud/firestore'
 import { asyncExecute } from '../terminalUtils';
 import { firestoreRegions, tf_state_bucket } from './constants';
+import {admin} from '../firebaseConfig'
 // Create a new client
 const firestore = new Firestore();
+const firestoreBaseRuleSet = `rules_version = '2'
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow admins to read and write all documents
+    match /{document=**} {
+      allow read, write: if hasAnyRole(["ADMIN", "OWNER"]);
+    }
+
+    // Rowy: Allow signed in users to read Rowy configuration and admins to write
+    match /_rowy_/{docId} {
+      allow read: if request.auth != null;
+      allow write: if hasAnyRole(["ADMIN", "OWNER"]);
+    	match /{document=**} {
+        allow read: if request.auth != null;
+        allow write: if hasAnyRole(["ADMIN", "OWNER"]);
+      }
+    }
+    // Rowy: Allow users to edit their settings
+    match /_rowy_/userManagement/users/{userId} {
+      allow get, update, delete: if isDocOwner(userId);
+      allow create: if request.auth != null;
+    }
+    // Rowy: Allow public to read public Rowy configuration
+    match /_rowy_/publicSettings {
+    	allow get: if true;
+    }
+
+    // Rowy: Utility functions
+    function isDocOwner(docId) {
+      return request.auth != null && (request.auth.uid == resource.id || request.auth.uid == docId);
+    }
+    function hasAnyRole(roles) {
+      return request.auth != null && request.auth.token.roles.hasAny(roles);
+    }
+
+    // Allow admins to read and write all documents
+    match /{document=**} {
+      allow read, write: if false
+    }
+
+  }
+}`
+
 const regionConverter = (region:string, serviceRegions:string[]) => {
     if (serviceRegions.includes(region)) {
       return region;
@@ -29,9 +73,11 @@ const regionConverter = (region:string, serviceRegions:string[]) => {
       const needsSetup = !(await firestoreExists())
       if(needsSetup){
         await asyncExecute(`terraform -v`,()=>{})
-      await asyncExecute(`terraform -chdir=terraform/firestore init ${tf_vars} -backend-config="bucket=${tf_state_bucket}" -backend-config="prefix=${tf_application}/${tf_environment}"`, () => {});
-      return asyncExecute(`terraform -chdir=terraform/firestore apply -auto-approve ${tf_vars}`,()=>{})
-       
+        await asyncExecute(`terraform -chdir=terraform/firestore init ${tf_vars} -backend-config="bucket=${tf_state_bucket}" -backend-config="prefix=${tf_application}/${tf_environment}"`, () => {});
+        await asyncExecute(`terraform -chdir=terraform/firestore apply -auto-approve ${tf_vars}`,()=>{})
+        const securityRules = admin.securityRules();
+        await securityRules.releaseFirestoreRulesetFromSource(firestoreBaseRuleSet);
+      return true
       } else {
         console.log("Firestore already exists");
         return false
