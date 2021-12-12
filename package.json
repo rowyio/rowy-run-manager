@@ -1,7 +1,7 @@
 {
   "name": "rowy-run-manager",
   "description": "Helps in keeping your Rowy backend update to date",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "main": "build/index.js",
   "scripts": {
     "start": "node build/index.js",
